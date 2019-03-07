@@ -1,0 +1,10 @@
+
+
+myip = "192.168.0.45"
+/api
+{"devicetype": "watchhue#tune"}
+
+
+/api/pPhwa5anSiPhiJ05YU4fNUENz-RTrcCoZututZwz/sensors
+
+/api/pPhwa5anSiPhiJ05YU4fNUENz-RTrcCoZututZwz/sensors/33
