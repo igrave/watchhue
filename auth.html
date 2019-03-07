@@ -2,13 +2,13 @@
 </body>
 watchhue auth page
 
-<p id="code">code</p>
-<p id="clientid">client id</p>
+Code: <p id="code">code</p>
+State: <p id="state">client id</p>
 <script>
 let url = new URL(window.location.href);
 let searchParams = new URLSearchParams(url.search);
 document.getElementById("code").innerHTML = searchParams.get('code');
-document.getElementById("clientid").innerHTML = searchParams.get('clientid');
+document.getElementById("state").innerHTML = searchParams.get('state');
 </script>
 </body>
 </html>
