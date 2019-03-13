@@ -5,11 +5,20 @@
 
 Code: <p id="code">code</p>
 State: <p id="state">client id</p>
+
 <script>
-let url = new URL(window.location.href);
-let searchParams = new URLSearchParams(url.search);
-document.getElementById("code").innerHTML = searchParams.get('code');
-document.getElementById("state").innerHTML = searchParams.get('state');
+urlParam = function(name){
+    var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
+    if (results==null){
+       return null;
+    }
+    else{
+       return decodeURI(results[1]) || 0;
+    }
+}
+
+document.getElementById("code").innerHTML = urlParam('code');
+document.getElementById("state").innerHTML = urlParam('state');
 </script>
 </body>
 </html>
