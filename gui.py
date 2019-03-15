@@ -1,14 +1,12 @@
-import sys  
-if sys.version_info[0] >= 3:  
-    import PySimpleGUI as sg  
-else:  
-    import PySimpleGUI27 as sg  
+import sys   
+import PySimpleGUI as sg  
+
 
 layout = [[sg.Button('Authorise'), sg.Text('Code:'),sg.Input(do_not_clear=True, key='_IN_'), sg.Button('Get Token')],
           [sg.Button('Sensors'), sg.Text('', key='_INFO_')],
           [sg.Text('Your typed chars appear here:'), sg.Text('', key='_OUTPUT_') ],  
           [sg.Input(do_not_clear=True, key='_IN_')],  
-          [sg.Button('Show'), sg.Button('Exit')]]  
+          [sg.Button('Show'), sg.Button('Exit')],[sg.Output(size=(80,10))]] 
 
 window = sg.Window('Window Title').Layout(layout)  
 
