@@ -2,6 +2,7 @@ import requests
 import webbrowser
 import hashlib
 import configparser
+from time import time
 
 
 # f
@@ -12,6 +13,7 @@ class WatchHue:
         self.cfg = configparser.ConfigParser()
         self.access_token = ''
         self.refresh_token = ''
+        self.refresh_expires = 0
         self.ids = {'clientid': 'F8cAL8xkecuwTQOXHgADY1Zzr9WaskCc',
                     'clientsecret': 'xUlllnef19nMy8I4',
                     'appid': 'watchhue',
@@ -22,6 +24,15 @@ class WatchHue:
                     'username': ''}
         self.code = ''
         self.tokReq = {}
+
+    def saveConfig(self):
+        self.cfg.read('watchhue.ini')
+        self.cfg['Auth'] = {'access_token': self.access_token,
+            'refresh_token': self.refresh_token,
+            'expiry': self.refresh_expires,
+            'username': self.ids['username']}
+        with open('watchhue.ini', 'w') as configfile:
+            self.cfg.write(configfile)   
 
     def loadConfig(self):
         self.cfg.read('watchhue.ini')
@@ -38,7 +49,12 @@ class WatchHue:
             self.access_token = self.cfg.get('Auth', 'access_token')
         # If refresh token
         if self.cfg.has_option('Auth', 'refresh_token'):
-            self.access_token = self.cfg.get('Auth', 'refresh_token')
+            self.refresh_token = self.cfg.get('Auth', 'refresh_token')
+        if self.cfg.has_option('Auth', 'expiry'):
+            self.refresh_expires = self.cfg.get('Auth', 'expiry')
+        # username for bridge
+        if self.cfg.has_option('Auth', 'username'):
+            self.ids['username'] = self.cfg.get('Auth', 'username')
 
     def startAuth(self):
         call = 'https://api.meethue.com/oauth2/auth?clientid=' + self.ids['clientid'] \
@@ -77,6 +93,7 @@ class WatchHue:
 
         self.access_token = tokenReq.json()['access_token']
         self.refresh_token = tokenReq.json()['refresh_token']
+        self.refresh_expires = int(tokenReq.json()['refresh_token_expires_in']) + time()
 
     def refreshTokens(self):
 
@@ -107,6 +124,8 @@ class WatchHue:
         self.access_token = tokenReq.json()['access_token']
         self.refresh_token = tokenReq.json()['refresh_token']
 
+        self.refresh_expires = int(tokenReq.json()['refresh_token_expires_in']) + time()
+
 
 
     def authWatchHue(self):
@@ -120,3 +139,22 @@ class WatchHue:
                     json={"devicetype": "watchhue"})
 
         self.ids['username'] = req_whitelist.json()[0]['success']['username']
+
+
+    def getHue(self, uri):
+        return self.s.get('https://api.meethue.com/bridge/'+self.ids['username']+uri,
+                   headers={'Authorization': 'Bearer {}'.format(self.access_token)}
+                   )
+
+    def putHue(self, uri, json):
+        return self.s.put('https://api.meethue.com/bridge/'+self.ids['username']+uri,
+                   json=json,
+                   headers={'content-type':'application/json', 'Authorization': 'Bearer {}'.format(self.access_token)}
+                   )
+
+    def postHue(self, uri, json):
+        return self.s.post('https://api.meethue.com/bridge/'+self.ids['username']+uri,
+                   json=json,
+                   headers={'content-type':'application/json', 'Authorization': 'Bearer {}'.format(self.access_token)}
+                   )
+
