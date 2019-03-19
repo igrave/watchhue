@@ -51,7 +51,7 @@ class WatchHue:
         if self.cfg.has_option('Auth', 'refresh_token'):
             self.refresh_token = self.cfg.get('Auth', 'refresh_token')
         if self.cfg.has_option('Auth', 'expiry'):
-            self.refresh_expires = self.cfg.get('Auth', 'expiry')
+            self.refresh_expires = self.cfg.getfloat('Auth', 'expiry')
         # username for bridge
         if self.cfg.has_option('Auth', 'username'):
             self.ids['username'] = self.cfg.get('Auth', 'username')
@@ -158,3 +158,4 @@ class WatchHue:
                    headers={'content-type':'application/json', 'Authorization': 'Bearer {}'.format(self.access_token)}
                    )
 
+    
