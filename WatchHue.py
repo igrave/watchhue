@@ -21,7 +21,8 @@ class WatchHue:
                     'devicename': 'watchhue',
                     'state': '2ab21ac2',
                     'nonce': '',
-                    'username': ''}
+                    'username': '',
+                    'sensIds': []}
         self.code = ''
         self.tokReq = {}
 
@@ -158,4 +159,22 @@ class WatchHue:
                    headers={'content-type':'application/json', 'Authorization': 'Bearer {}'.format(self.access_token)}
                    )
 
-    
+    def get_pres_sensors_https(self):
+        all_sens = self.s.get('https://api.meethue.com/bridge/'+self.ids['username']+'/sensors',
+                              headers={'Authorization': 'Bearer {}'.format(self.access_token)})
+        sj = all_sens.json()
+        sens_ids = sj.keys()
+        for key in sens_ids:
+            if sj[key]['type'] == 'ZLLPresence':
+                sj[key]['name']
+                self.ids['sensIds'].append(key)
+            print(self.ids['sensIds'])
+
+    def get_pres_sensor_state_https(self):
+        pres_states = []
+        for i in self.ids['sensIds']:
+            r = self.s.get('https://api.meethue.com/bridge/'+self.ids['username']+'/sensors/'+i,
+                           headers={'Authorization': 'Bearer {}'.format(self.access_token)})
+            pres_states.append(r.json()["state"])
+        print(pres_states)
+        return pres_states
