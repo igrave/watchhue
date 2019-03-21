@@ -12,7 +12,8 @@ layout = [[sg.Button('Load'), sg.Button('Save'), sg.Button('Hue Auth'), sg.Butto
           [sg.Text('URI:'), sg.Input(key='_URI_', do_not_clear=True, default_text='/lights/')],
           [sg.Text('Body:'), sg.Input(default_text='{"hue": 50000, "on": true,"bri": 200}', do_not_clear=True, key='_BODY_', size=(35, 3))],
           [sg.Button('Get'), sg.Button('Put'), sg.Button('Post')],
-          [sg.Output(size=(80, 10))]]
+          [sg.Output(size=(80, 10))],
+          [sg.Button('Find Sensors'), sg.Button('Check Sensors')]]
 
 window = sg.Window('Window Title').Layout(layout)
 
@@ -86,5 +87,10 @@ while True:                 # Event Loop
         print(dumps(q.json(), indent=2))
         window.Refresh()
 
+    if event == 'Find Sensors':
+        w.get_pres_sensors_https()
+
+    if event == 'Check Sensors':
+        w.get_pres_sensor_state_https()
 
 window.Close()
